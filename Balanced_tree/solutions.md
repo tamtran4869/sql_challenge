@@ -132,6 +132,37 @@ SELECT
 ```
 ![image](https://user-images.githubusercontent.com/114192113/212569108-c16a2407-50f6-43e4-8f4a-84a0634fd9b7.png)
 
-There are 25% of number of transactions spending less than or equal 375 usd per transactions, 50% spending less than or equal to 509 usd
-and 75% transactions spending less than or equal 647 usd per transactions
+There are 25% of number of transactions spending less than or equal 375 usd per transaction, 50% spending less than or equal to 509 usd and 75% transactions spending less than or equal 647 usd per transaction.
+
+4.What is the average discount value per transaction?
+```sql
+SELECT -- take the avg
+	AVG(discount) AS discount_per_transac
+FROM 	(
+	SELECT -- compute sum discount amount each transac
+		txn_id AS transac_id,
+		SUM(qty*price*(discount/100)) AS discount
+	FROM sales
+	GROUP BY 1
+	) AS sum_discount;
+```
+![image](https://user-images.githubusercontent.com/114192113/212569416-c127324d-059a-4c56-a7d4-046b29b5667f.png)
+
+5. What is the percentage split of all transactions for members vs non-members?
+```sql
+SELECT
+	total,
+	member_transac,
+	member_transac/total AS member_transac_pct,
+	nonmember_transac,
+	nonmember_transac/total AS nonmember_transac_pct	
+FROM	(
+	SELECT
+		COUNT(DISTINCT txn_id) AS total,
+		COUNT(DISTINCT CASE WHEN member = 't' THEN txn_id ELSE NULL END) AS member_transac,
+		COUNT(DISTINCT CASE WHEN member = 'f' THEN txn_id ELSE NULL END) AS nonmember_transac
+	FROM sales
+	)AS group_id;
+```
+
 
