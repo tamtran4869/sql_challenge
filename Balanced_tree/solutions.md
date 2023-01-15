@@ -51,8 +51,8 @@ FROM sales;
 ```   
 ![image](https://user-images.githubusercontent.com/114192113/212568378-367e39d5-0427-41da-afa4-bced06e6fbf8.png)
 
-Comment: 
-Discount ammounts accounted for more than 10% of total revenue.
+**Comment**
+Discount ammounts accounted for more than 10% of total revenue. The company should be considered this percentage to make sure the expected ROI.
 
 #### Transaction Analysis
 1. How many unique transactions were there?
@@ -150,19 +150,62 @@ FROM 	(
 
 5. What is the percentage split of all transactions for members vs non-members?
 ```sql
-SELECT
+SELECT -- compute the pct of transac
 	total,
 	member_transac,
 	member_transac/total AS member_transac_pct,
 	nonmember_transac,
 	nonmember_transac/total AS nonmember_transac_pct	
 FROM	(
-	SELECT
+	SELECT -- count transacs by membership status and the total
 		COUNT(DISTINCT txn_id) AS total,
 		COUNT(DISTINCT CASE WHEN member = 't' THEN txn_id ELSE NULL END) AS member_transac,
 		COUNT(DISTINCT CASE WHEN member = 'f' THEN txn_id ELSE NULL END) AS nonmember_transac
 	FROM sales
 	)AS group_id;
 ```
+![image](https://user-images.githubusercontent.com/114192113/212569755-32ac97e4-d94b-40b1-91d5-eff00bbf0c2c.png)
+
+6. What is the average revenue for member transactions and non-member transactions?
+
+```sql
+SELECT - group by membership and take the avg
+	member,
+	AVG(rev) AS avg_rev
+FROM	(
+	SELECT -- sum the revenue
+		member,
+		txn_id,
+		sum(qty*price) AS rev
+	FROM sales
+	GROUP BY txn_id
+	)AS group_id
+GROUP BY 1;
+```
+![image](https://user-images.githubusercontent.com/114192113/212569919-65150ec9-ff62-4491-9a9a-95c3bd33f271.png)
+
+**Comments**
+Each transaction has average 6 unique products which means the customers tent to buy many types of clothes in 1 purchasing. It is good to create cross-sell promotion to push low sales items with the high ones or redundant items together for boosting sales. 
+
+Although there is not much different between member and non-member average values in one bill, the members bought more time than non-member customers (more than 60% of transactions are from members). Therefore, promotions for joining membership should be considered and advertise more.
+
+#### Product analysis
+
+1.What are the top 3 products by total revenue before discount?
+```sql
+SELECT
+	pd.product_name,
+	SUM(s.qty*s.price) AS rev
+FROM sales s
+LEFT JOIN product_details pd
+	ON s.prod_id = pd.product_id
+GROUP BY 1
+ORDER BY 2 DESC
+LIMIT 3;
+```
+![image](https://user-images.githubusercontent.com/114192113/212570631-c0777f8a-0b2d-410e-bc5d-7363aa01d5a1.png)
+
+2.
+
 
 
