@@ -1,6 +1,7 @@
 -- SQL challenge: BALANCED TREE CLOTHING COMPANY
 -- Creating functions and stored procedure for making monthly reports easier.
 
+-- HIGH SALES LEVEL ANALYSIS
 -- Question 1
 DROP FUNCTION IF EXISTS get_total_qty;
 DELIMITER $$
@@ -55,7 +56,9 @@ END
 $$
 DELIMITER ;
 
---Question 2
+
+-- TRANSACTION ANALYSIS
+--Question 1
 DROP FUNCTION IF EXISTS get_total_unique_transac;
 DELIMITER $$
 CREATE FUNCTION get_total_unique_transac(month INT)
@@ -72,6 +75,32 @@ BEGIN
 END
 $$
 DELIMITER ;
+
+-- Question 2:
+DROP FUNCTION IF EXISTS get_avg_unique_prod;
+DELIMITER $$
+CREATE FUNCTION get_avg_unique_prod(month INT)
+RETURNS INT
+DETERMINISTIC
+BEGIN 
+  DECLARE total INT;
+  SET total = (
+	SELECT 
+		AVG(unique_prod) AS avg_unique_prod
+	FROM	(
+		SELECT 
+			txn_id AS transac_id,
+			COUNT(DISTINCT prod_id) AS unique_prod
+		FROM sales
+		WHERE MONTH(start_txn_time) = month
+		GROUP BY 1
+		) AS count_unique
+	  );
+  RETURN total;
+END
+$$
+DELIMITER ;
+
 
 --Question 3
 DROP FUNCTION IF EXISTS get_percentile_rev;
@@ -131,6 +160,30 @@ $$
 DELIMITER ;
 
 -- Question 5
+DROP PROCEDURE IF EXISTS proc_transac_by_membership;
+DELIMITER //
+CREATE PROCEDURE proc_transac_by_membership(month INT)
+BEGIN
+	SELECT
+		total,
+		member_transac,
+		member_transac/total AS member_transac_pct,
+		nonmember_transac,
+		nonmember_transac/total AS nonmember_transac_pct	
+	FROM	(
+		SELECT
+			COUNT(DISTINCT txn_id) AS total,
+			COUNT(DISTINCT CASE WHEN member = 't' THEN txn_id ELSE NULL END) AS member_transac,
+			COUNT(DISTINCT CASE WHEN member = 'f' THEN txn_id ELSE NULL END) AS nonmember_transac
+		FROM sales
+		WHERE MONTH(start_txn_time) = month
+		)AS group_id;
+END
+//
+DELIMITER ;
+
+
+-- Question 6
 DROP PROCEDURE IF EXISTS proc_rev_by_membership;
 DELIMITER //
 CREATE PROCEDURE proc_rev_by_membership(month INT)
@@ -152,6 +205,8 @@ END
 //
 DELIMITER ;
 
+
+-- PRODUCT ANALYSIS
 -- Question 1
 DROP PROCEDURE IF EXISTS proc_top_rev_before_discount;
 DELIMITER //
@@ -394,19 +449,21 @@ END
 DELIMITER ;
 
 -- FINAL FULL PROCEDURE
-DROP PROCEDURE IF EXISTS report;
+DROP PROCEDURE IF EXISTS proc_report;
 DELIMITER //
-CREATE PROCEDURE report (month INT)
+CREATE PROCEDURE proc_report (month INT)
 BEGIN 
-	SELECT get_total_qty(month) AS total_qty; 
+	SELECT  get_total_qty(month) AS total_qty; 
 	SELECT	get_rev_before_discount(month) AS rev_before_discount;
 	SELECT	get_total_discount(month) AS total_discount;
-	SELECT	get_total_unique_transac(month);
+	SELECT	get_total_unique_transac(month) AS total_unique_transac;
+	SELECT	get_avg_unique_prod(month) AS avg_unique_product;
 	SELECT	get_percentile_rev(25,month) AS revenue_at_percentile_25;
 	SELECT	get_percentile_rev(50,month) AS revenue_at_percentile_50;
 	SELECT	get_percentile_rev(75,month) AS revenue_at_percentile_75;
 	SELECT	get_avg_discount(month) AS avg_discount;
 	
+	CALL 	proc_transac_by_membership(month);
 	CALL 	proc_rev_by_membership(month);	
 	CALL 	proc_top_rev_before_discount(month,3);
 	CALL	proc_segment_info(month);
@@ -422,6 +479,3 @@ BEGIN
 END
 //
 DELIMITER ;
-
-
-
