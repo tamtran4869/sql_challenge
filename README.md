@@ -14,10 +14,10 @@
   <h3 align="center">8 week SQL challenge</h3>
 
   <p align="center">
-    The 8 week SQL challenge is an interesting activity for analyst brought by Data With Danny Ma.
- This included 8 case studies covering various files from finance, banking to ecommerce, marketing, F&B with many practical tasks.
+    The 8-week SQL challenge is an exciting activity for analysts brought by Data With Danny Ma.
+ It Included 8 case studies covering various files from finance and banking to e-commerce, marketing, and F&B with many practical tasks.
  
- The detail of the course: <a href="https://8weeksqlchallenge.com/">8 Week SQL Challenge by Danny Ma.</a>
+ The detail of the challenge: <a href="https://8weeksqlchallenge.com/">8 Week SQL Challenge by Danny Ma.</a>
     
    <a href="#about-the-course"><strong>Explore the docs »</strong></a>
     <br />
@@ -50,13 +50,12 @@ Case Study #7 - Balanced Tree Clothing Co.
 Case Study #8 - Fresh Segments
 
 ## Solutions
-The project did not follow the order of the challenge.
 
 Case Study #7 - Balanced Tree Clothing Co.
 
-This is a case of business analysis to understand sales, market demands and customer segments with 3 type of analysis tasks: High level sales analysis, transaction analysis and product analysis using CTE, subquery, window function, user defined functions and stored procedure.
+This is a case of business analysis to understand sales, market demands and product segments with 3 types of analysis tasks: High-level sales analysis, transaction analysis and product analysis using CTE, subquery, window function, user-defined functions and stored procedure.
 
-<a href="https://github.com/tamtran4869/sql_challenge/blob/master/Product_analysis.md">Go to the section > </a>
+<a href="https://github.com/tamtran4869/sql_challenge/blob/main/Balanced_tree/solutions.md">Go to the section > </a>
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
