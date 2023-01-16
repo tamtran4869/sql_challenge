@@ -469,7 +469,8 @@ BEGIN
 	SELECT  get_total_qty(month) AS total_qty; 
 	SELECT	get_rev_before_discount(month) AS rev_before_discount;
 	SELECT	get_total_discount(month) AS total_discount;
-	SELECT	get_total_unique_transac(month);
+	SELECT	get_total_unique_transac(month) AS total_unique_transac;
+	SELECT	get_avg_unique_prod(month) AS avg_unique_product;
 	SELECT	get_percentile_rev(25,month) AS revenue_at_percentile_25;
 	SELECT	get_percentile_rev(50,month) AS revenue_at_percentile_50;
 	SELECT	get_percentile_rev(75,month) AS revenue_at_percentile_75;
