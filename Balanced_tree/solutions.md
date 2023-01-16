@@ -438,7 +438,7 @@ SELECT
 FROM sales;
 
 ```
-Tranfer to the function to get total quantity:
+Transfer to the function to get the total quantity:
 ```sql
 DROP FUNCTION IF EXISTS get_total_qty;
 DELIMITER $$
@@ -458,7 +458,7 @@ $$
 DELIMITER ;
 ```
 
-The full SQL script is <a href="https://www.udemy.com/course/advanced-sql-mysql-for-analytics-business-intelligence/"> here.</a>
+The full SQL script is <a href="https://github.com/tamtran4869/sql_challenge/blob/main/Balanced_tree/balanced_tree_full_procedure.sql"> here.</a>
 
 The final report procedure:
 ```sql
