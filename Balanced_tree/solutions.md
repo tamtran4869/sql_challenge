@@ -6,7 +6,8 @@ optimized for the modern adventurer!
 The CEO of this trendy fashion company, has asked to help the team's merchandising team analyze sales performance 
 and create basic financial reports that can be shared across the company.
 
-### Datasets
+<details>
+<summary><h3>Datasets</summary>
 
 In this case study, there are a total of 4 tables in this case study (e.g. product_details, sales, product_hierarchy, product_prices)
 .However, only 2 main tables: product_details and sales, were needed to solve all regular questions.
@@ -21,12 +22,18 @@ transac ID and transac time, product ID). Each row is a purchased product.
 
 ![image](https://user-images.githubusercontent.com/114192113/212568155-f0065c68-2c9a-4fc9-8a5b-59a60ed45a37.png)
 
-### Tasks
+</details>
+
+<details>
+<summary><h3>Tasks</summary>
+	
 Go to the database
 ```sql
 USE balanced_tree
 ```
-#### High Level Sales Analysis
+<details>
+<summary><h4>High Level Sales Analysis</summary>
+	
 1. What was the total quantity sold for all products?
 ``` sql
 SELECT
@@ -54,8 +61,12 @@ FROM sales;
 **Comment**
 
 Discount ammounts accounted for more than 10% of total revenue. The company should be considered this percentage to make sure the expected ROI.
+	
+</details>
+	
+<details>
+<summary><h4>Transaction Analysis</summary>
 
-#### Transaction Analysis
 1. How many unique transactions were there?
 
 Since each row of the sales table is a purchased product, one transac may has more than 1 product = 1 row. Hence,
@@ -191,6 +202,10 @@ Each transaction has average 6 unique products which means the customers tent to
 
 Although there is not much different between member and non-member average values in one bill, the members bought more time than non-member customers (more than 60% of transactions are from members). Therefore, promotions for joining membership should be considered and advertise more.
 
+</details>	
+	
+
+	
 #### Product analysis
 The hierarchy of product in this analysis included 3 levels:
 Category > Segment > Product
