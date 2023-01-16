@@ -21,6 +21,7 @@ transaction ID and transaction time, and product ID). Each row is a purchased pr
 
 ![image](https://user-images.githubusercontent.com/114192113/212568155-f0065c68-2c9a-4fc9-8a5b-59a60ed45a37.png)
 
+All datasets are on the website of the challenge: <a href="https://8weeksqlchallenge.com/case-study-7/"> case #7 datasets.</a>
 
 ### Tasks
 	
