@@ -19,7 +19,7 @@
  
  The detail of the challenge: <a href="https://8weeksqlchallenge.com/">8 Week SQL Challenge by Danny Ma.</a>
     
-   <a href="#about-the-course"><strong>Explore the docs »</strong></a>
+   <a href="#case-introduction><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://github.com/tamtran4869/sql_challenge/issues">Report Bug</a>
