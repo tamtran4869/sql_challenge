@@ -3,14 +3,13 @@
 Balanced Tree Clothing Company is proud to offer a range of clothing and lifestyle wear 
 optimized for the modern adventurer! 
 
-The CEO of this trendy fashion company, has asked to help the team's merchandising team analyze sales performance 
+The CEO of this trendy fashion company has asked to help the team's merchandising team analyze sales performance 
 and create basic financial reports that can be shared across the company.
 
-<details>
-<summary><h3>Datasets</summary>
+### Datasets
 
-In this case study, there are a total of 4 tables in this case study (e.g. product_details, sales, product_hierarchy, product_prices)
-.However, only 2 main tables: product_details and sales, were needed to solve all regular questions.
+There are a total of 4 tables, in this case, study (e.g. product_details, sales, product_hierarchy, product_prices)
+.However, only two main tables: product_details and sales, were needed to solve all common questions.
 
 The product_details table contains all the information about the full range Balanced Clothing sells in its stores.
 Each row is a product.
@@ -18,22 +17,20 @@ Each row is a product.
 ![image](https://user-images.githubusercontent.com/114192113/212568010-c76543a5-2506-4132-903e-eadaa0dfb22d.png)
 
 The sales table includes all information about transactions (e.g. quantity, price, discount percentages, member status,
-transac ID and transac time, product ID). Each row is a purchased product.
+transaction ID and transaction time, and product ID). Each row is a purchased product.
 
 ![image](https://user-images.githubusercontent.com/114192113/212568155-f0065c68-2c9a-4fc9-8a5b-59a60ed45a37.png)
 
-</details>
 
-<details>
-<summary><h3>Tasks</summary>
+### Tasks
 	
 Go to the database
 ```sql
 USE balanced_tree
 ```
 <details>
-<summary><h4>High Level Sales Analysis</summary>
-	
+<summary><h4>High Level Sales Analysis</summary>	
+
 1. What was the total quantity sold for all products?
 ``` sql
 SELECT
@@ -60,7 +57,7 @@ FROM sales;
 
 **Comment**
 
-Discount ammounts accounted for more than 10% of total revenue. The company should be considered this percentage to make sure the expected ROI.
+Discount amounts accounted for more than 10% of total revenue. The company should be considered this percentage to make sure the expected ROI.
 	
 </details>
 	
@@ -69,8 +66,8 @@ Discount ammounts accounted for more than 10% of total revenue. The company shou
 
 1. How many unique transactions were there?
 
-Since each row of the sales table is a purchased product, one transac may has more than 1 product = 1 row. Hence,
-the COUNT DISTINCT was needed to get the unique transaction numbers. 
+Since each row of the sales table is a purchased product, one transaction may have more than 1 product = 1 row. Hence,
+the COUNT DISTINCT was needed to get the unique transaction numbers.
 ``` sql
 SELECT
 	COUNT(DISTINCT txn_id) AS total_unique_transac
@@ -80,7 +77,7 @@ FROM sales;
 
 2. What is the average unique products purchased in each transaction?
 
-Using subquery to get count of unique product, then computing the average.
+Using the subquery to get the count of unique products, then computing the average.
 
 ``` sql
 SELECT 
@@ -97,12 +94,12 @@ FROM	(
 
 3. What are the 25th, 50th and 75th percentile values for the revenue per transaction?
 
-There is a function called PERCENTILE_CONT() which allows to compute percentile values of each series. However, mySQL 8 has not 
-supported the function, so a defined function was created which based on the formular of percentile calculation: 
+There is a function called PERCENTILE_CONT() which allows the computation of percentile values of each series. However, MySQL 8 has not 
+supported the function, so a defined function was created based on the formula of percentile calculation: 
 
-rank X = (p/100)* N with N is the total number of the series and p is the percentage wanted to calculate the percentile value.
+Rank X = (p/100)* N with N as the total number of the series and p as the percentage wanted to calculate the percentile value.
 
-The series is ordered ascending, the element Xth is the value of percentile p. The function takes a percentile parameter.
+The series is ordered ascending, and the element Xth is the value of percentile p. The function takes a percentile parameter.
 
 ``` sql
 DROP FUNCTION IF EXISTS get_percentile_rev;
@@ -144,7 +141,7 @@ SELECT
 ```
 ![image](https://user-images.githubusercontent.com/114192113/212569108-c16a2407-50f6-43e4-8f4a-84a0634fd9b7.png)
 
-There are 25% of number of transactions spending less than or equal 375 usd per transaction, 50% spending less than or equal to 509 usd and 75% transactions spending less than or equal 647 usd per transaction.
+There, 25% of the transactions spent less than or equal to 375 USD per transaction, 50% spent less than or equal to 509 USD and 75% of transactions spent less than or equal to 647 USD per transaction.
 
 4.What is the average discount value per transaction?
 ```sql
@@ -198,21 +195,21 @@ GROUP BY 1;
 
 **Comments**
 
-Each transaction has average 6 unique products which means the customers tent to buy many types of clothes in 1 purchasing. It is good to create cross-sell promotion to push low sales items with the high ones or redundant items together for boosting sales. 
+Each transaction has average 6 unique products, which means the customer tent to buy many types of clothes in 1 purchase. It is good to create cross-sell promotions to push low-sales items with high ones, redundant items, or out-of-style items to boost sales. 
 
-Although there is not much different between member and non-member average values in one bill, the members bought more time than non-member customers (more than 60% of transactions are from members). Therefore, promotions for joining membership should be considered and advertise more.
+Although it is not much difference between member and non-member average values in one bill, the members bought more times than non-member customers (more than 60% of transactions are from members). Therefore, promotions for joining membership should be considered and advertised more.
 
 </details>	
 	
-
+<details>
+<summary><h4> Product Analysis</summary>
 	
-#### Product analysis
 The hierarchy of product in this analysis included 3 levels:
 Category > Segment > Product
 
-	- Category: Men and Women
+	Category: Men and Women
 
-	- Segment: Jacket, jeans, shirt and socks
+	Segment: Jacket, jeans, shirt and socks
 
 1.What are the top 3 products by total revenue before discount?
 ```sql
@@ -320,7 +317,7 @@ ORDER BY 1,3 DESC;
 
 7.What is the percentage split of revenue by segment for each category?
 
-It is the same with the question 6 instead of grouping by segments and  products, this question is for categories and segments.
+It is the same with question 6; instead of grouping by segments and products, this question is for categories and segments.
 ```sql
 SELECT -- compute the percentage
 	category_name,
@@ -371,7 +368,7 @@ ORDER BY 4 DESC;
 
 10.What is the most common combination of at least 1 quantity of any 3 products in a 1 single transaction?
 
-Using 2 CROSS JOIN to make combination of any 3 products and counting. With any 3 products, there are 6 combinations (accounting the order). The first 6 rows are for all the same 3 products with same time of combinations, so we can take any one of them.
+Using 2 CROSS JOIN to make all combinations of any 3 products and counting. With any 3 products, there are 6 combinations (accounting for the ordering). The first 6 rows are for all the same 3 products with the same time of combinations so that we can take any one of them.
 
 ![image](https://user-images.githubusercontent.com/114192113/212571628-a01a4605-05a0-48ae-afc6-d58267a2d212.png)
 
@@ -414,22 +411,23 @@ LEFT JOIN product_details pd3
 
 **Comments**
 
-There are many information but here are some interesting insights:
+There is much information, but here are some interesting insights:
 
-There are only 2 products in each segment accounted total from around 80% - 90% of revenues each segment.The company should get trend analysis of these products, if there would be a significant downtrend, that means a times of promoting new products. Or the company could make the product porfolio more diversity with new products that have similar design with these popular products because it is less risky for the company with various of main products.
+There are only 2 products in each segment, accounting for around 80% - 90% of revenues.  Since it is less risky to the company with various primary products,  the company could diversify its product portfolio with new products with similar designs to these popular products. Besides, the company should get a trend analysis of major products; if there is a significant downtrend, that means a time to promote new products.
 
-The shirt and jeans are major segments.
+Shirts and jeans are significant segments.
 
-Although the quantity of women category is higher than men, the revenue of woment category is lower. Hence, the average price of men items is higher than women items. The men category also accounted for 55% of revenue. It is very interesting. There are 2 new ways to increase the revenue in term of operation (not manufacturing): increase the price of women items reasonablaly (e.g. special collections, unique items) and try make more purchases on men products (e.g. combo packages, reasonable discount).
+Although the quantity of women category is higher than men, the revenue of the women category is lower. Hence, the average price of men's items is higher than women's items. The men's category also accounted for 55% of revenue. It is very interesting. There are 2 new ways to increase the revenue in terms of operation (not manufacturing): increase the price of women's items reasonably (e.g. special collections, unique items) and try to make more purchases of men's products (e.g. combo packages, reasonable discount).
 
-The customers usually buy men and womens items together. They might go shopping with their family. The company could run promotion for mixing men and women items, display the store with couple items and family items.
-
+The customers usually buy men's and women's items together. They might go shopping with their family. The company could run promotions for mixing men's and women's items and display the store with couple and family items.
+	
+</details>
+	
 ### Reporting Challenge
 
 Write a single SQL script that combines all of the previous questions into a scheduled report that the Balanced Tree team can run at the beginning of each month to calculate the previous month’s values.
 
-All these previous queries were rewrote in form of functions and procedures with an additional WHEN statement. Then 
-one full report procedure with month parameter run all these functions and procedures to get the report monthly.
+All these previous queries were rewritten in form of functions and procedures with an additional WHEN statement. Then one full report procedure with a month parameter runs all these functions and procedures to get the report monthly.
 
 For example:
 
@@ -460,7 +458,7 @@ $$
 DELIMITER ;
 ```
 
-The full SQL script is here.
+The full SQL script is <a href="https://www.udemy.com/course/advanced-sql-mysql-for-analytics-business-intelligence/"> here.</a>
 
 The final report procedure:
 ```sql
