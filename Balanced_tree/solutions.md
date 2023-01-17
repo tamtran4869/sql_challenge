@@ -34,7 +34,7 @@ Go to the database
 USE balanced_tree
 ```
 <details>
-<summary><h4>High Level Sales Analysis</summary>	
+<summary><h5>High Level Sales Analysis</summary>	
 
 1. What was the total quantity sold for all products?
 ``` sql
@@ -67,7 +67,7 @@ Discount amounts accounted for more than 10% of total revenue. The company shoul
 </details>
 	
 <details>
-<summary><h4>Transaction Analysis</summary>
+<summary><h5>Transaction Analysis</summary>
 
 1. How many unique transactions were there?
 
@@ -207,7 +207,7 @@ Although it is not much difference between member and non-member average values 
 </details>	
 	
 <details>
-<summary><h4> Product Analysis</summary>
+<summary><h5> Product Analysis</summary>
 	
 The hierarchy of product in this analysis included 3 levels:
 Category > Segment > Product
