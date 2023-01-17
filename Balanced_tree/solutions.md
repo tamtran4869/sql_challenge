@@ -6,7 +6,8 @@ optimized for the modern adventurer!
 The CEO of this trendy fashion company has asked to help the team's merchandising team analyze sales performance 
 and create basic financial reports that can be shared across the company.
 
-### Datasets
+<details>
+<summary><h3>Datasets</summary>	
 
 There are a total of 4 tables, in this case, study (e.g. product_details, sales, product_hierarchy, product_prices)
 .However, only two main tables: product_details and sales, were needed to solve all common questions.
@@ -23,7 +24,10 @@ transaction ID and transaction time, and product ID). Each row is a purchased pr
 
 All datasets are on the website of the challenge: <a href="https://8weeksqlchallenge.com/case-study-7/"> case #7 datasets.</a>
 
-### Tasks
+</details>
+	
+<details>
+<summary><h3>Tasks</summary>	
 	
 Go to the database
 ```sql
@@ -242,7 +246,7 @@ GROUP BY 1;
 
 3.What is the top selling product for each segment?
 ```sql
-SELECT -- Get the top selling (qty)
+SELECT -- get the top selling (qty)
 	segment_name,
 	product_name AS top_selling,
 	MAX(qty) AS max_qty
@@ -276,7 +280,7 @@ GROUP BY 1;
 
 5.What is the top selling product for each category?
 ```sql
-SELECT -- Take the max qty of each category
+SELECT -- take the max qty of each category
 	category_name,
 	product_name AS top_selling,
 	MAX(qty) AS max_qty
@@ -424,7 +428,10 @@ The customers usually buy men's and women's items together. They might go shoppi
 	
 </details>
 	
-### Reporting Challenge
+</details>
+	
+<details>
+<summary><h3>Reporting Challenge</summary>	
 
 Write a single SQL script that combines all of the previous questions into a scheduled report that the Balanced Tree team can run at the beginning of each month to calculate the previous month’s values.
 
@@ -494,8 +501,59 @@ END
 //
 DELIMITER ;
 ```
+</details>
+	
+<details>
+<summary><h3>Bonus Challenge</summary>	
+	
+Use a single SQL query to transform the product_hierarchy and product_prices datasets to the product_details table.
 
+The product_hierarchy table:
+	
+![image](https://user-images.githubusercontent.com/114192113/213023011-2d1a5478-677d-4e0b-b83f-455c58102e9d.png)
 
+The product_price table:
+	
+![image](https://user-images.githubusercontent.com/114192113/213023117-c8a4a8fd-7e3b-4f3d-a2bb-01b687ccffb6.png)
+
+By joining 3 product_hierarchy tables together to make each become 1 level (e.g. category, segment or style) and 
+then using the final table joined to product_prices on style_id, the SQL query below transformed 2 above tables into the product_details table.
+	
+```sql
+WITH product_details AS (
+SELECT  -- join 3 table product hierachy together with inner join.
+	CONCAT(ph3.level_text," ",ph2.level_text," ",ph1.level_text) AS product_name,
+	ph1.id AS category_id,
+	ph2.id AS segment_id,
+	ph3.id AS style_id,
+	ph1.level_text AS category_name,
+	ph2.level_text AS segment_name,
+	ph3.level_text AS style_name
+FROM product_hierarchy ph1
+INNER JOIN product_hierarchy ph2
+	ON ph1.id = ph2.parent_id
+INNER JOIN product_hierarchy ph3
+	ON ph2.id = ph3.parent_id
+)
+
+SELECT -- join to get product_id and price
+	pp.product_id,
+	pp.price,
+	pd.product_name,
+	pd.category_id,
+	pd.segment_id,
+	pd.style_id,
+	pd.category_name,
+	pd.segment_name,
+	pd.style_name
+FROM product_details pd
+LEFT JOIN product_prices pp
+	ON pd.style_id = pp.id;	
+```
+	
+![image](https://user-images.githubusercontent.com/114192113/213024108-8c4ec851-00d4-4f82-818c-a7fd6e8c9dae.png)
+
+</details>
 
 
 
