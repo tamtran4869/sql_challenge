@@ -27,7 +27,7 @@ All datasets are on the website of the challenge: <a href="https://8weeksqlchall
 </details>
 	
 <details>
-<summary><h3>Analysis Tasks</summary>	
+<summary><h3>Analytical Tasks</summary>	
 	
 Go to the database
 ```sql
