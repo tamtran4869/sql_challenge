@@ -27,14 +27,16 @@ All datasets are on the website of the challenge: <a href="https://8weeksqlchall
 </details>
 	
 <details>
-<summary><h3>Tasks</summary>	
+<summary><h3>Analysis Tasks</summary>	
 	
 Go to the database
 ```sql
 USE balanced_tree
 ```
+There are 3 type of analysis in this case:
+	
 <details>
-<summary><h5>High Level Sales Analysis</summary>	
+<summary>High Level Sales Analysis</summary>	
 
 1. What was the total quantity sold for all products?
 ``` sql
@@ -67,7 +69,7 @@ Discount amounts accounted for more than 10% of total revenue. The company shoul
 </details>
 	
 <details>
-<summary><h5>Transaction Analysis</summary>
+<summary>Transaction Analysis</summary>
 
 1. How many unique transactions were there?
 
@@ -207,7 +209,7 @@ Although it is not much difference between member and non-member average values 
 </details>	
 	
 <details>
-<summary><h5> Product Analysis</summary>
+<summary> Product Analysis</summary>
 	
 The hierarchy of product in this analysis included 3 levels:
 Category > Segment > Product
