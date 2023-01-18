@@ -14,7 +14,7 @@ INNER JOIN product_hierarchy ph3
 	ON ph2.id = ph3.parent_id
 )
 
-SELECT
+SELECT -- join to get product_id and price
 	pp.product_id,
 	pp.price,
 	pd.product_name,
