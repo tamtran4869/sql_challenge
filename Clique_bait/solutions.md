@@ -222,5 +222,14 @@ LIMIT 3;
 ```
 ![image](https://user-images.githubusercontent.com/114192113/213300423-bedfa630-6688-4939-a913-e7fa93d2a7cb.png)
 
-**Comments ** 
-  
+**Comments** 
+	
+From Jan to Mar, the visits increased significantly, then there was a sudden drop in Apr. It could be explained by the promotion campaigns all were ended at the end of Mar. Therefore, promotion campaigns played a huge role in getting traffic to the website.
+	
+The ad impression and ad click indicated a very good ctr which shows advertising material attracting users.
+	
+Generally, cart-add counts/view counts in all category have similar rate around from 60-61% which could indicate no serious problems in products or in website interface but we still need investigate detail in product level for sure. 
+	
+Shellfish was the leading category. There were 2 possible reasons that the attractive offers of Half Off - Treat Your Shellf(ish) and the demand of users. This also explained the peak in visits in Feb.
+
+</details>
