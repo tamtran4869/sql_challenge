@@ -9,15 +9,15 @@ and create basic financial reports that can be shared across the company.
 <details>
 <summary><h3>Datasets</summary>	
 
-There are a total of 4 tables, in this case, study (e.g. product_details, sales, product_hierarchy, product_prices)
-.However, only two main tables: product_details and sales, were needed to solve all common questions.
+There are a total of 4 tables, in this case study (e.g. `product_details`, `sales`, `product_hierarchy`, `product_prices`)
+.However, only two main tables: `product_details` and `sales`, were needed to solve all common questions.
 
-The product_details table contains all the information about the full range Balanced Clothing sells in its stores.
+The `product_details` table contains all the information about the full range Balanced Clothing sells in its stores.
 Each row is a product.
 
 ![image](https://user-images.githubusercontent.com/114192113/212568010-c76543a5-2506-4132-903e-eadaa0dfb22d.png)
 
-The sales table includes all information about transactions (e.g. quantity, price, discount percentages, member status,
+The `sales` table includes all information about transactions (e.g. quantity, price, discount percentages, member status,
 transaction ID and transaction time, and product ID). Each row is a purchased product.
 
 ![image](https://user-images.githubusercontent.com/114192113/212568155-f0065c68-2c9a-4fc9-8a5b-59a60ed45a37.png)
@@ -74,7 +74,7 @@ Discount amounts accounted for more than 10% of total revenue. The company shoul
 1. How many unique transactions were there?
 
 Since each row of the sales table is a purchased product, one transaction may have more than 1 product = 1 row. Hence,
-the COUNT DISTINCT was needed to get the unique transaction numbers.
+the `COUNT DISTINCT` was needed to get the unique transaction numbers.
 ``` sql
 SELECT
 	COUNT(DISTINCT txn_id) AS total_unique_transac
@@ -101,10 +101,10 @@ FROM	(
 
 3. What are the 25th, 50th and 75th percentile values for the revenue per transaction?
 
-There is a function called PERCENTILE_CONT() which allows the computation of percentile values of each series. However, MySQL 8 has not 
+There is a function called `PERCENTILE_CONT()` which allows the computation of percentile values of each series. However, MySQL 8 has not 
 supported the function, so a defined function was created based on the formula of percentile calculation: 
 
-Rank X = (p/100)* N with N as the total number of the series and p as the percentage wanted to calculate the percentile value.
+`Rank X = (p/100)* N` with N as the total number of the series and p as the percentage wanted to calculate the percentile value.
 
 The series is ordered ascending, and the element Xth is the value of percentile p. The function takes a percentile parameter.
 
@@ -375,7 +375,7 @@ ORDER BY 4 DESC;
 
 10.What is the most common combination of at least 1 quantity of any 3 products in a 1 single transaction?
 
-Using 2 CROSS JOIN to make all combinations of any 3 products and counting. With any 3 products, there are 6 combinations (accounting for the ordering). The first 6 rows are for all the same 3 products with the same time of combinations so that we can take any one of them.
+Using 2 `CROSS JOIN` to make all combinations of any 3 products and counting. With any 3 products, there are 6 combinations (accounting for the ordering). The first 6 rows are for all the same 3 products with the same time of combinations so that we can take any one of them.
 
 ![image](https://user-images.githubusercontent.com/114192113/212571628-a01a4605-05a0-48ae-afc6-d58267a2d212.png)
 
@@ -508,18 +508,18 @@ DELIMITER ;
 <details>
 <summary><h3>Bonus Challenge</summary>	
 	
-Use a single SQL query to transform the product_hierarchy and product_prices datasets to the product_details table.
+Use a single SQL query to transform the `product_hierarchy` and `product_prices` datasets to the `product_details` table.
 
-The product_hierarchy table:
+The `product_hierarchy` table:
 	
 ![image](https://user-images.githubusercontent.com/114192113/213023011-2d1a5478-677d-4e0b-b83f-455c58102e9d.png)
 
-The product_price table:
+The `product_price` table:
 	
 ![image](https://user-images.githubusercontent.com/114192113/213023117-c8a4a8fd-7e3b-4f3d-a2bb-01b687ccffb6.png)
 
-By joining 3 product_hierarchy tables together to make each become 1 level (e.g. category, segment or style) and 
-then using the final table joined to product_prices on style_id, the SQL query below transformed 2 above tables into the product_details table.
+By joining 3 `product_hierarchy` tables together to make each become 1 level (e.g. category, segment or style) and 
+then using the final table joined to `product_prices` on style_id, the SQL query below transformed 2 above tables into the `product_details` table.
 	
 ```sql
 WITH product_details AS (
