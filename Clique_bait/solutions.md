@@ -1,15 +1,15 @@
 ## Case study #6: Clique Bait Store
 
-Clique Bait Store is online seafood store.
+Clique Bait Store is an online seafood store.
 
-This case is about supporting to the team in analysis for creative solutions to calculate funnel fallout rates 
+This case is about supporting the team in analysis for creative solutions to calculate funnel fallout rates 
 for the Clique Bait online store.
 
 <details>
 <summary><h3>Datasets</summary>	
 
 There are a total of 5 tables (e.g. `users`, `events`, `event_identifier`, `campaign_identifier` and `page_hierarchy`) which relate to each other
-and need to combine for extracting required data.
+and need to combine to extract the required data.
 
 The `users` table contains cookie_id of users who visited the website.
   
@@ -19,11 +19,11 @@ The `events` table is a major table recorded all actions of each visit in websit
 
 ![image](https://user-images.githubusercontent.com/114192113/213287251-444e904b-5ab0-4bdd-9579-eea5e8fc8ece.png)
   
-Event types are in the `event_identifier` table.
+The `events` table is a major table with all actions of each visit on the website.
 
 ![image](https://user-images.githubusercontent.com/114192113/213287814-b0c78cb8-d116-4929-9609-cab7d1e29b4b.png)
 
-Promotion campaigns information are stored in the `campaign_identifier`.
+Promotion campaign information is stored in the `campaign_identifier`.
 
 ![image](https://user-images.githubusercontent.com/114192113/213288121-7d200fef-fcf2-459d-a33c-4a8b24f19c8c.png)
 
@@ -61,7 +61,7 @@ FROM users;
 ```
 ![image](https://user-images.githubusercontent.com/114192113/213289531-d266f12d-3038-450e-b3d1-471b4f654daf.png)
 
-Since the number of cookies is discrete then this number could be explained: Each user has 3-4 cookies.
+Since the number of cookies is discrete, this number could be explained: Each user has 3-4 cookies.
 
 **Question 3:** What is the unique number of visits by all users per month?
   
@@ -89,7 +89,7 @@ ORDER BY 2 DESC;
 
 **Question 5:** What is the percentage of visits which have a purchase event?
   
-To make an overall view, the query gave the percentages of all event. 
+To make an overall view, the query gave the percentages of all events. 
 The purchase event accounted for 5.43% of total visits.
 ```sql
 SELECT
@@ -106,15 +106,15 @@ ORDER BY 2 DESC;
   
 **Question 6:** What is the percentage of visits which view the checkout page but do not have a purchase event?
  
-Using 2 CTE tables with the first one to get id and time of visits viewing checkout and then joining to events 
-table to get next events of these id where the event is purchase (e.g. event_id=3) and count visits in the second CTE. 
-From these table, all required information was extracted.
+Using 2 CTE tables with the first one to get the id and time of visits viewing checkout and then joining to events 
+table to get the next events of these ids where the event is "purchase" (e.g. event_id=3) and count visits in the second CTE. 
+From these tables, all required information was extracted.
 
-The first table contains id and start_time of viewing checkout page visits
+The first table contains the id and start_time of viewing checkout page visits.
   
 ![image](https://user-images.githubusercontent.com/114192113/213291244-3d3c63a4-8ad4-467e-b1d6-70b43cad41fd.png)
 
-The second tables includes counts of viewing checkout page visit and purchase visit.
+The second table includes counts of viewing checkout page visits and purchase visits.
   
 ![image](https://user-images.githubusercontent.com/114192113/213292190-c38873c7-f4bd-489c-b06b-b6f1b2a100dd.png)
 
@@ -188,8 +188,8 @@ GROUP BY 1;
 
 **Question 9:**  What are the top 3 products by purchases?
 
-Using the same method with question 6 with 2 CTE: 1 for add cart visits and 
-then 1 for next purchase event of these visits.
+Using the same method with question 6 with 2 CTE: 1 for add-cart visits and 
+then 1 for the next purchase event of these visits.
 
 ```sql
 WITH cart_add_id AS (
@@ -224,12 +224,14 @@ LIMIT 3;
 
 **Comments** 
 	
-From Jan to Mar, the visits increased significantly, then there was a sudden drop in Apr. It could be explained by the promotion campaigns all were ended at the end of Mar. Therefore, promotion campaigns played a huge role in getting traffic to the website.
+From Jan to Mar, the visits increased significantly, then there was a sudden drop in Apr. It could be explained by the promotion campaigns all ended at the end of Mar. Therefore, promotion campaigns played a considerable role in getting traffic to the website.
 	
-The ad impression and ad click indicated a very good ctr which shows advertising material attracting users.
+The ad impression and click indicated a very good click-through rate (CTR) which shows advertising material attracting users.
 	
-Generally, cart-add counts/view counts in all category have similar rate around from 60-61% which could indicate no serious problems in products or in website interface but we still need investigate detail in product level for sure. 
+Generally, cart-add counts/view counts in all categories have similar rates, around 60-61%, which could indicate no serious problems in products or in the website interface, but we still need to investigate detail at the product level for sure. 
 	
-Shellfish was the leading category. There were 2 possible reasons that the attractive offers of Half Off - Treat Your Shellf(ish) and the demand of users. This also explained the peak in visits in Feb.
+Shellfish was the leading category. There were 2 possible reasons: the attractive offers of Half Off - Treat Your Shellf(ish) and the demand of users. This also explained the peak in visits in Feb.
 
 </details>
+	
+	
