@@ -395,3 +395,173 @@ In most of the metrics, there was no significant difference between products, so
 	
 <details>
 <summary><h3>Campaigns Analysis</summary>	
+
+**Question 1:** Generate a table that has 1 single row for every unique visit_id record and has the following columns:
+	
+    • user_id
+	
+    • visit_id
+	
+    • visit_start_time: the earliest event_time for each visit
+	
+    • page_views: count of page views for each visit
+	
+    • cart_adds: count of product cart add events for each visit
+	
+    • purchase: 1/0 flag if a purchase event exists for each visit
+	
+    • campaign_name: map the visit to a campaign if the visit_start_time falls between the start_date and end_date
+	
+    • impression: count of ad impressions for each visit
+	
+    • click: count of ad clicks for each visit
+	
+    • (Optional column) cart_products: a comma separated text value with products added to the cart sorted by the order they were added to the cart (hint: use the sequence_number)
+
+Using `LEFT JOIN` with 4 tables: `events` to compute all metrics, `users` to get user_id, `campaign_identifier` to get campaign_name and a CTE `cart_products` to get the string of buying products. 
+
+``` sql
+DROP TABLE IF EXISTS campaign_performance;
+CREATE TABLE campaign_performance AS
+WITH cart_products AS (
+	SELECT -- get info of products added to the cart
+		e.visit_id,
+		e.sequence_number,
+		GROUP_CONCAT(ph.page_name SEPARATOR ', ') AS cart_products
+	FROM events e
+	LEFT JOIN page_hierarchy ph
+		ON e.page_id = ph.page_id
+	WHERE 
+		e.event_type = 2
+	GROUP BY 1
+	ORDER BY 1,2
+	)
+SELECT -- compute metrics
+	u.user_id,
+	e.visit_id,
+	ci.campaign_name,
+	MIN(event_time) AS visit_start_time,
+	SUM(CASE WHEN event_type = 1 THEN 1 ELSE 0 END) AS view_product,
+	SUM(CASE WHEN event_type = 2 THEN 1 ELSE 0 END) AS add_cart,
+	SUM(CASE WHEN event_type = 3 THEN 1 ELSE 0 END) AS purchases,
+	SUM(CASE WHEN event_type = 4 THEN 1 ELSE 0 END) AS impressions,
+	SUM(CASE WHEN event_type = 5 THEN 1 ELSE 0 END) AS clicks,
+	cp.cart_products
+FROM events e
+LEFT JOIN users u -- get user_id
+	ON e.cookie_id = u.cookie_id
+LEFT JOIN campaign_identifier ci -- get campaign_name
+	ON e.event_time BETWEEN ci.start_date AND ci.end_date
+LEFT JOIN cart_products cp -- get cart products
+	ON e.visit_id = cp.visit_id
+GROUP BY 1,2;
+```
+
+![image](https://user-images.githubusercontent.com/114192113/213318881-884759cc-9a93-4c24-ae59-56f62e7a6907.png)
+
+**Question 2:** Identifying users who have received impressions during each campaign period and comparing each metric with other users who did not have an impression event
+```sql
+SELECT -- compute pct 
+	impressions,
+	user_count,
+	view_count,
+	addcart_count,
+	purchase_count,
+	product_view_avg,
+	cart_add_avg,
+	addcart_count/view_count AS view_to_add_cvr,
+	purchase_count/addcart_count AS add_to_purchase_cvr,
+	purchase_count/view_count AS conv_rate
+FROM	(	
+	SELECT -- compute metrics by impressions
+		impressions,
+		COUNT(DISTINCT user_id) AS user_count,
+		COUNT(DISTINCT CASE WHEN view_product != 0 THEN visit_id ELSE NULL END) AS view_count,
+		COUNT(DISTINCT CASE WHEN add_cart != 0 THEN visit_id ELSE NULL END) AS addcart_count,
+		COUNT(DISTINCT CASE WHEN purchases != 0 THEN visit_id ELSE NULL END) AS purchase_count,
+		AVG(view_product) AS product_view_avg,
+		AVG(add_cart) AS cart_add_avg
+	FROM campaign_performance 
+	GROUP BY 1
+	) 
+	AS info;
+```
+
+![image](https://user-images.githubusercontent.com/114192113/213319173-24fdd608-004a-4606-9f22-845ce9562eb1.png)
+
+**Question 3 & 4:** Does clicking on an impression lead to higher purchase rates? What is the uplift in purchase rate when comparing users who click on a campaign impression versus users who do not receive an impression? What if we compare them with users who just an impression but do not click?
+
+```sql
+SELECT -- compute pct 
+	impressions,
+	clicks,
+	user_count,
+	view_count,
+	addcart_count,
+	purchase_count,
+	product_view_avg,
+	cart_add_avg,
+	addcart_count/view_count AS view_to_add_cvr,
+	purchase_count/addcart_count AS add_to_purchase_cvr,
+	purchase_count/view_count AS conv_rate
+FROM	(	
+	SELECT -- compute metrics by impressions and clicks
+		impressions,
+		clicks,
+		COUNT(DISTINCT user_id) AS user_count,
+		COUNT(DISTINCT CASE WHEN view_product != 0 THEN visit_id ELSE NULL END) AS view_count,
+		COUNT(DISTINCT CASE WHEN add_cart != 0 THEN visit_id ELSE NULL END) AS addcart_count,
+		COUNT(DISTINCT CASE WHEN purchases != 0 THEN visit_id ELSE NULL END) AS purchase_count,
+		AVG(view_product) AS product_view_avg,
+		AVG(add_cart) AS cart_add_avg
+	FROM campaign_performance 
+	GROUP BY 1,2
+	) 
+	AS info;
+
+```
+![image](https://user-images.githubusercontent.com/114192113/213319723-2824e196-be1b-4529-ad1b-7eda2577f1db.png)
+
+**Question 5:** What metrics can you use to quantify the success or failure of each campaign compared to each other?
+	
+```sql
+SELECT -- compute pct 
+	campaign_name,
+	user_count,
+	view_count,
+	addcart_count,
+	purchase_count,
+	product_view_avg,
+	cart_add_avg,
+	addcart_count/view_count AS view_to_add_cvr,
+	purchase_count/addcart_count AS add_to_purchase_cvr,
+	purchase_count/view_count AS conv_rate
+FROM	(	
+	SELECT -- compute metrics by campaign
+		campaign_name,
+		COUNT(DISTINCT user_id) AS user_count,
+		COUNT(DISTINCT CASE WHEN view_product != 0 THEN visit_id ELSE NULL END) AS view_count,
+		COUNT(DISTINCT CASE WHEN add_cart != 0 THEN visit_id ELSE NULL END) AS addcart_count,
+		COUNT(DISTINCT CASE WHEN purchases != 0 THEN visit_id ELSE NULL END) AS purchase_count,
+		AVG(view_product) AS product_view_avg,
+		AVG(add_cart) AS cart_add_avg
+	FROM campaign_performance 
+	WHERE campaign_name IS NOT NULL
+	GROUP BY 1
+	) 
+	AS info;
+```
+	
+![image](https://user-images.githubusercontent.com/114192113/213319931-f653353e-0ef8-4d32-9af5-04d3aab92182.png)
+
+**Comments**
+	
+Although the ad impression reached most users, the budget may be low, so it did not get many visits. However, these visits with ad impressions have significantly higher conversion rates in the whole funnel than normal visits. The number of page views and products added to the cart was also higher. It shows that advertising has a good effect on improving conversion rates and sales on the website.
+
+Investigating further into clicks, the visitors who saw and clicked on the ad have a high probability of buying and buying more products than visitors who just saw it.
+
+The advertising material performed well when the CTR was very high (397/442).
+
+Although the campaign for shellfish was boosted and engaged most users, the conversion rates in the whole funnel, the number of page views, and cart products were not significantly outstanding than other campaigns. So, the company could consider the ROI of each campaign and decide which one brought the best profit and should have similar campaigns in the future.
+	
+</details>
