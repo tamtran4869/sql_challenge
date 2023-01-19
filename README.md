@@ -51,7 +51,13 @@ Case Study #8 - Fresh Segments
 
 ## Solutions
 
-Case Study #7 - Balanced Tree Clothing Co.
+**Case Study #6 - Clique Bait Store.**
+
+This case has 3 types of analytical tasks with digital analysis, product funnel analysis and campaign analysis to assess traffic on the website, products, categories, and promotion campaigns.
+
+<a href="https://github.com/tamtran4869/sql_challenge/blob/main/Clique_bait/solutions.md">Go to the section > </a>
+
+**Case Study #7 - Balanced Tree Clothing Co.**
 
 This is a case of business analysis to understand sales, market demands and product segments with 3 types of analysis tasks: High-level sales analysis, transaction analysis and product analysis using CTE, subquery, window function, user-defined functions and stored procedure.
 
