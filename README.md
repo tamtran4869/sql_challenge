@@ -51,6 +51,8 @@ Case Study #8 - Fresh Segments
 
 ## Solutions
 
+Solutions included SQL queries, results and personal comments about insights after each part.
+
 **Case Study #6 - Clique Bait Store.**
 
 This case has 3 types of analytical tasks with digital analysis, product funnel analysis and campaign analysis to assess traffic on the website, products, categories, and promotion campaigns.
