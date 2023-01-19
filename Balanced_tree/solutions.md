@@ -38,7 +38,7 @@ There are 3 type of analysis in this case:
 <details>
 <summary>High Level Sales Analysis</summary>	
 
-1. What was the total quantity sold for all products?
+**Question 1:** What was the total quantity sold for all products?
 ``` sql
 SELECT
 	SUM(qty) AS total_quantity
@@ -46,7 +46,7 @@ FROM sales;
 ```
 ![image](https://user-images.githubusercontent.com/114192113/212568296-5a02b975-c631-43f6-9885-c9fee99c1f00.png)
 
-2. What is the total generated revenue for all products before discounts?
+**Question 2:** What is the total generated revenue for all products before discounts?
 ``` sql
 SELECT
 	SUM(qty* price) AS total_rev_before_discount
@@ -54,7 +54,7 @@ FROM sales;
 ```   
 ![image](https://user-images.githubusercontent.com/114192113/212568349-c82a86f5-a4ce-4be0-a6b0-c6146a742242.png)
 
-3. What was the total discount amount for all products?
+**Question 3:** What was the total discount amount for all products?
 ``` sql
 SELECT
 	SUM(qty* price*(discount/100)) AS total_discount
@@ -71,7 +71,7 @@ Discount amounts accounted for more than 10% of total revenue. The company shoul
 <details>
 <summary>Transaction Analysis</summary>
 
-1. How many unique transactions were there?
+**Question 1:** How many unique transactions were there?
 
 Since each row of the sales table is a purchased product, one transaction may have more than 1 product = 1 row. Hence,
 the `COUNT DISTINCT` was needed to get the unique transaction numbers.
@@ -82,7 +82,7 @@ FROM sales;
 ```  
 ![image](https://user-images.githubusercontent.com/114192113/212568544-c6339975-2265-4ec9-b3c6-80a62eeae42e.png)
 
-2. What is the average unique products purchased in each transaction?
+**Question 2:** What is the average unique products purchased in each transaction?
 
 Using the subquery to get the count of unique products, then computing the average.
 
@@ -99,7 +99,7 @@ FROM	(
 ```  
 ![image](https://user-images.githubusercontent.com/114192113/212568716-f03ef96c-d68a-4555-b9ce-28ba80e93bf3.png)
 
-3. What are the 25th, 50th and 75th percentile values for the revenue per transaction?
+**Question 3:** What are the 25th, 50th and 75th percentile values for the revenue per transaction?
 
 There is a function called `PERCENTILE_CONT()` which allows the computation of percentile values of each series. However, MySQL 8 has not 
 supported the function, so a defined function was created based on the formula of percentile calculation: 
@@ -150,7 +150,7 @@ SELECT
 
 There, 25% of the transactions spent less than or equal to 375 USD per transaction, 50% spent less than or equal to 509 USD and 75% of transactions spent less than or equal to 647 USD per transaction.
 
-4.What is the average discount value per transaction?
+**Question 4:** What is the average discount value per transaction?
 ```sql
 SELECT -- take the avg
 	AVG(discount) AS discount_per_transac
@@ -164,7 +164,7 @@ FROM 	(
 ```
 ![image](https://user-images.githubusercontent.com/114192113/212569416-c127324d-059a-4c56-a7d4-046b29b5667f.png)
 
-5. What is the percentage split of all transactions for members vs non-members?
+**Question 5:** What is the percentage split of all transactions for members vs non-members?
 ```sql
 SELECT -- compute the pct of transac
 	total,
@@ -182,7 +182,7 @@ FROM	(
 ```
 ![image](https://user-images.githubusercontent.com/114192113/212569755-32ac97e4-d94b-40b1-91d5-eff00bbf0c2c.png)
 
-6. What is the average revenue for member transactions and non-member transactions?
+**Question 6:** What is the average revenue for member transactions and non-member transactions?
 
 ```sql
 SELECT - group by membership and take the avg
@@ -218,7 +218,7 @@ Category > Segment > Product
 
 	Segment: Jacket, jeans, shirt and socks
 
-1.What are the top 3 products by total revenue before discount?
+**Question 1:** What are the top 3 products by total revenue before discount?
 ```sql
 SELECT
 	pd.product_name,
@@ -232,7 +232,7 @@ LIMIT 3;
 ```
 ![image](https://user-images.githubusercontent.com/114192113/212570631-c0777f8a-0b2d-410e-bc5d-7363aa01d5a1.png)
 
-2. What is the total quantity, revenue and discount for each segment?
+**Question 2:** What is the total quantity, revenue and discount for each segment?
 ```sql
 SELECT	
 	pd.segment_name,
@@ -246,7 +246,7 @@ GROUP BY 1;
 ```
 ![image](https://user-images.githubusercontent.com/114192113/212570713-f6593dae-238c-4385-8724-d3abc6df0d0b.png)
 
-3.What is the top selling product for each segment?
+**Question 3:** What is the top selling product for each segment?
 ```sql
 SELECT -- get the top selling (qty)
 	segment_name,
@@ -266,7 +266,7 @@ GROUP BY 1;
 ```
 ![image](https://user-images.githubusercontent.com/114192113/212570777-234e0cf1-79a0-4044-8afe-e1351de63071.png)
 
-4.What is the total quantity, revenue and discount for each category?
+**Question 4:** What is the total quantity, revenue and discount for each category?
 ```sql
 SELECT 
 	pd.category_name,
@@ -280,7 +280,7 @@ GROUP BY 1;
 ```
 ![image](https://user-images.githubusercontent.com/114192113/212570936-3448e1e4-c83e-49fb-a69e-0a7236761fbb.png)
 
-5.What is the top selling product for each category?
+**Question 5:** What is the top selling product for each category?
 ```sql
 SELECT -- take the max qty of each category
 	category_name,
@@ -300,7 +300,7 @@ GROUP BY 1;
 ```
 ![image](https://user-images.githubusercontent.com/114192113/212570981-a77a8c69-72a2-4c3c-af18-6124137d4c9f.png)
 
-6. What is the percentage split of revenue by product for each segment?
+**Question 6:** What is the percentage split of revenue by product for each segment?
 
 ```sql
 SELECT -- compute the percentage
@@ -322,7 +322,7 @@ ORDER BY 1,3 DESC;
 ```
 ![image](https://user-images.githubusercontent.com/114192113/212571060-e2af77f4-ca8a-49cc-b094-7c3b4cf9ffcf.png)
 
-7.What is the percentage split of revenue by segment for each category?
+**Question 7:** What is the percentage split of revenue by segment for each category?
 
 It is the same with question 6; instead of grouping by segments and products, this question is for categories and segments.
 ```sql
@@ -345,7 +345,7 @@ ORDER BY 1,3 DESC;
 ```
 ![image](https://user-images.githubusercontent.com/114192113/212571262-1d79ae3f-4740-463b-800b-8a592d07c8d0.png)
 
-8.What is the percentage split of total revenue by category?
+**Question 8:** What is the percentage split of total revenue by category?
 ```sql
 SELECT 
 	pd.category_name,
@@ -357,7 +357,7 @@ GROUP BY 1;
 ```
 ![image](https://user-images.githubusercontent.com/114192113/212571301-48301ae4-d84f-4d54-b4b8-2446be4a56ea.png)
 
-9.What is the total transaction “penetration” for each product? (hint: penetration = number of transactions where at least 1 quantity of a product was purchased divided by total number of transactions)
+**Question 9:** What is the total transaction “penetration” for each product? (hint: penetration = number of transactions where at least 1 quantity of a product was purchased divided by total number of transactions)
 
 ```sql
 SELECT
@@ -373,7 +373,7 @@ ORDER BY 4 DESC;
 ```
 ![image](https://user-images.githubusercontent.com/114192113/212571445-a2b6feb5-c0fa-4d85-8e88-8ec4e437d137.png)
 
-10.What is the most common combination of at least 1 quantity of any 3 products in a 1 single transaction?
+**Question 10:** What is the most common combination of at least 1 quantity of any 3 products in a 1 single transaction?
 
 Using 2 `CROSS JOIN` to make all combinations of any 3 products and counting. With any 3 products, there are 6 combinations (accounting for the ordering). The first 6 rows are for all the same 3 products with the same time of combinations so that we can take any one of them.
 
