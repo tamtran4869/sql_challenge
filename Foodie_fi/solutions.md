@@ -279,6 +279,8 @@ WHERE
 	
 - once a customer churns they will no longer make payments
 
+**Answer :**
+	
 Using recursive to get the last date of a plan (It could be the start day of a new plan or '2020-12-31') and add 1 month into the start date to get the payment date until the payment day > the last date (because the customer changed the plan, so no more payment date for the old plan). Moreover, adding row numbers with window functions to get payment orders.
 	
 ![image](https://user-images.githubusercontent.com/114192113/221866371-8d14e6f1-ed39-4a78-ad83-f1d393198c22.png)
@@ -344,8 +346,10 @@ ORDER BY
 	plan_id
 ;	
 	
-```
-				       
+```				       
 ![image](https://user-images.githubusercontent.com/114192113/221871410-c4df3225-537a-401f-ac0a-363452f362ae.png)
+
+</details>
+
 
 				       
