@@ -181,6 +181,171 @@ ORDER BY 2 DESC;
 
 **Question 7:** What is the customer count and percentage breakdown of all 5 plan_name values at 2020-12-31?
 
-  
-  
-  
+**Question 8:** How many customers have upgraded to an annual plan in 2020?
+```sql
+SELECT
+	p.plan_name,
+	COUNT(DISTINCT s.customer_id) as num_customer
+FROM subscriptions s
+LEFT JOIN 
+	plans p ON s.plan_id = p.plan_id
+WHERE 
+	p.plan_name = 'pro annual' AND
+	YEAR(s.start_date) = '2020';
+	
+```
+	
+![image](https://user-images.githubusercontent.com/114192113/221858582-a08e1372-5f24-4256-9e87-37020fd526f6.png)
+
+**Question 9:** How many days on average does it take for a customer to an annual plan from the day they join Foodie-Fi?
+	
+```sql
+SELECT -- get customer using an annual plan.
+	COUNT(DISTINCT s.customer_id) AS pro_annual_customer,
+	ROUND(AVG(DATEDIFF(start_date,join_date))) AS avg_days_to_upgrade
+FROM subscriptions s
+LEFT JOIN
+	(SELECT -- get the join date
+		MIN(start_date) as join_date,
+		customer_id
+	FROM subscriptions
+	GROUP BY 2) AS j 
+	ON s.customer_id = j.customer_id
+WHERE plan_id = 3;
+```
+
+![image](https://user-images.githubusercontent.com/114192113/221858853-5bfa6382-5bad-47d8-97a6-7ca08647f642.png)
+
+
+**Question 10:** Can you further breakdown this average value into 30 day periods (i.e. 0-30 days, 31-60 days etc)
+
+```sql
+WITH cte AS (
+SELECT --get customer using an annual plan.
+	s.customer_id AS pro_annual_customer,
+	DATEDIFF(start_date,join_date) AS days_to_upgrade,
+	FLOOR(DATEDIFF(start_date,join_date)/30) AS bucket
+FROM subscriptions s
+LEFT JOIN
+	(SELECT 
+		MIN(start_date) as join_date,
+		customer_id
+	FROM subscriptions
+	GROUP BY 2) AS j 
+	ON s.customer_id = j.customer_id
+WHERE plan_id = 3
+)
+SELECT -- group and count customer by time ranges
+	CONCAT(bucket*30, '-', (bucket * 30 - 1)+30, ' days') as days_to_upgrade_range, 
+	COUNT( DISTINCT pro_annual_customer) as num_customer
+FROM  cte
+GROUP BY bucket;
+```
+ 
+![image](https://user-images.githubusercontent.com/114192113/221860132-b19f4109-580b-4c2c-b2d8-bc5cbc70e0f0.png)
+
+**Question 11:** How many customers downgraded from a pro monthly to a basic monthly plan in 2020?
+	
+```sql
+SELECT
+	COUNT(DISTINCT s.customer_id) AS downgraded_customer
+FROM subscriptions s
+LEFT JOIN
+	(SELECT 
+		start_date,
+		customer_id
+	FROM subscriptions
+	WHERE plan_id = 2) AS j 
+	ON j.customer_id = s.customer_id
+WHERE 
+	s.plan_id = 1 AND
+	s.start_date > j.start_date AND
+	YEAR(s.start_date) = '2020';
+```
+ ![image](https://user-images.githubusercontent.com/114192113/221860599-638eef22-297c-4b39-863d-33aa9a085111.png)
+
+</details>
+
+ <details>
+<summary><h3>C. Challenge Payment Question </summary>	
+
+**Question:** The Foodie-Fi team wants you to create a new payments table for the year 2020 that includes amounts paid by each customer in the subscriptions table with the following requirements:
+
+- monthly payments always occur on the same day of month as the original start_date of any monthly paid plan
+	
+- upgrades from basic to monthly or pro plans are reduced by the current paid amount in that month and start immediately
+	
+- upgrades from pro monthly to pro annual are paid at the end of the current billing period and also starts at the end of the month period
+	
+- once a customer churns they will no longer make payments
+
+Using recursive to get the last date of a plan (It could be the start day of a new plan or '2020-12-31') and add 1 month into the start date to get the payment date until the payment day > the last date (because the customer changed the plan, so no more payment date for the old plan). Moreover, adding row numbers with window functions to get payment orders.
+	
+![image](https://user-images.githubusercontent.com/114192113/221866371-8d14e6f1-ed39-4a78-ad83-f1d393198c22.png)
+
+Join 2 cte: one for the current plan, and one for the previous plan to calculate the amount.
+	
+![image](https://user-images.githubusercontent.com/114192113/221866606-fe39c51e-1541-4833-b17d-20cd097c3001.png)
+	
+```sql
+WITH info AS (
+WITH RECURSIVE cte AS (
+	SELECT
+		s.customer_id,
+		s.plan_id,
+		p.plan_name,
+		s.start_date as payment_date,
+		CASE WHEN
+			LEAD(s.start_date) OVER (PARTITION BY s.customer_id ORDER BY s.start_date) IS NULL THEN '2020-12-31'
+			ELSE LEAD(s.start_date) OVER (PARTITION BY s.customer_id ORDER BY s.start_date)
+		END AS last_date,
+		p.price as amount
+	FROM subscriptions s
+	LEFT JOIN 
+		plans p ON s.plan_id = p.plan_id
+	WHERE 
+		p.plan_name <> 'trial' AND
+		YEAR(start_date) = '2020'	
+	UNION ALL
+	SELECT 
+	    customer_id,
+	    plan_id,
+	    plan_name,
+	    DATE_ADD(payment_date, INTERVAL 1 MONTH) AS payment_date,
+	    last_date,
+	    amount
+	FROM cte
+	WHERE DATE_ADD(payment_date, INTERVAL 1 MONTH) <= last_date
+	    AND plan_name != 'pro annual'
+	)
+SELECT 
+	* ,
+	ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY payment_date, plan_id) AS payment_order
+FROM cte
+WHERE amount IS NOT NULL
+)
+SELECT
+	cur.customer_id,
+	cur.plan_id,
+	cur.plan_name,
+	cur.payment_date,
+	CASE WHEN
+		pre.plan_name IN ('pro monthly','basic monthly') AND cur.plan_name = 'pro annual' THEN (cur.amount - pre.amount)
+		ELSE cur.amount
+	END AS amount,
+	cur.payment_order
+FROM info cur
+LEFT JOIN 
+	info pre ON cur.customer_id = pre.customer_id AND 
+	cur.payment_order = pre.payment_order + 1
+ORDER BY 
+	customer_id, 
+	payment_order, 
+	plan_id
+;	
+	
+```
+				       
+![image](https://user-images.githubusercontent.com/114192113/221871410-c4df3225-537a-401f-ac0a-363452f362ae.png)
+
+				       
