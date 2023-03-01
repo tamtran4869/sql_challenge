@@ -65,7 +65,7 @@ This is a case of business analysis to understand sales, market demands and prod
 
 <a href="https://github.com/tamtran4869/sql_challenge/blob/main/Balanced_tree/solutions.md">Go to the section > </a>
 
-**Case Study #3 - Foodie Fi.**
+**Case Study #3 - Foodie Fi**
 
 The case is with 3 types of tasks: customer journey, data and payment analysis to understand users' behaviours through changing subscription plans and business health through users and payment analysis.
 
