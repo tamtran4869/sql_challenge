@@ -302,12 +302,8 @@ FROM	(
 	GROUP BY 1
 	) 
 	AS info;
-
-<<<<<<< HEAD
--- Question 3&4:
-=======
+	
 -- Question 3 & 4:
->>>>>>> b75c079f931bd1888b66c59fa151809d167f1dda
 SELECT -- compute pct 
 	impressions,
 	clicks,
